@@ -4,13 +4,10 @@ require_once dirname(__FILE__).'/../config.php';
 
 include _ROOT_PATH.'/app/security/check.php';
 
-$x = isset($_REQUEST ['x']) ? $_REQUEST['x'] : null;
-$y = isset($_REQUEST ['y']) ? $_REQUEST['y'] : null;
-$z = isset($_REQUEST ['z']) ? $_REQUEST['z'] : null;
-$operation = ['op'] ? ['op'] : null;
+function validate (&$x, &$y, &$z) {
 
 if ( ! (isset($x) && isset($y) && isset($z))) {
-	$messages [] = 'Błędne wywołanie aplikacji. Brak jednego z parametrów.';
+    return false;
 }
 
 if ( $x == "") {
@@ -32,21 +29,31 @@ if (empty( $messages )) {
 	if (! is_numeric( $y )) {
 		$messages [] = 'Podana wartość nie jest liczbą całkowitą';
 	}
+ }
+if (empty( $messages )) {
+    return true;
+} else { 
+	return false;
 }
-    
-if (empty ( $messages )) {
-    
+
+}
+
+$x = $_REQUEST ['x'] ?? null;
+$y = $_REQUEST ['y'] ?? null;
+$z = $_REQUEST ['z'] ?? null;
+
+
+if (validate($x, $y, $z)) {
+
     global $role;
 	
-    $x = intval($x);
-    $y = intval($y);
-    $z = floatval($z);
+	$x = intval($x);
+	$y = intval($y);
+	$z = floatval($z);
 
-    switch ($operation) {
-        default : 
-            $result = ($x / $y + (($x / $y) * $z / 100));
-                break;
-    }                        
+	$result = ($x / $y + (($x / $y) * $z / 100));
 }
+
+
 
 include 'calc_credit_view.php';
